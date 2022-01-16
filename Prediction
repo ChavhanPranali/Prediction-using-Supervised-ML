@@ -1,0 +1,54 @@
+THE SPARKS FOUNDATION
+DATA SCIENCE AND BUSINESS ANALYTICS
+Author :- Pranali Rajusing Chavhan
+GRIP January 2022
+Task 1 :- Prediction using Supervised ML
+DataSet Link :- http://bit.ly/w-data
+Problem :- Predict the percentage of an the no of study hours.
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+#reading data from remote link
+url="http://bit.ly/w-data"
+s_data=pd.read_csv(url)
+print("Data Imported Successfully")
+s_data.head(10)
+#plotting the distribution of score 
+s_data.plot(x='Hours',y='Scores',style='o')
+plt.title('Hours Vs Percentage')
+plt.xlabel('Hours Studied')
+plt.ylabel('Percentage Score')
+plt.show()
+#preparing the data
+x=s_data.iloc[:,:-1].values
+y=s_data.iloc[:,1].values
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=0)
+#training algorithm
+from sklearn.linear_model import LinearRegression
+model=LinearRegression()
+model.fit(x_train,y_train)
+print("Training Complete")
+#plotting regression line
+line=model.coef_*x+model.intercept_
+#plotting for test data
+plt.scatter(x,y)
+plt.plot(x,line,c='r');
+plt.show()
+#making predicting
+print(x_test) #testing data in hour
+y_pred=model.predict(x_test) #predicting the scores
+#comparing actual vs predicted
+df=pd.DataFrame({'Actual':y_test,'predicted':y_pred})
+df
+#test data
+hours=9.25
+pred=model.predict([[hours]])
+print("No of Hours={}".format(hours))
+print("Predicted Score={}".format(pred[0]))
+#evaluating the model
+from sklearn import metrics
+print('Mean Absolute Error:',metrics.mean_absolute_error(y_test,y_pred))
